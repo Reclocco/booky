@@ -23,9 +23,13 @@ import fr.youness.ebook.help.Help
 
 class ListBookActivity : AppCompatActivity() {
 
-    var list1: List<Item> = listOf()
-    var list2: List<Item> = listOf()
-    var list3: MutableList<Item> = mutableListOf()
+    var listFree: List<Item> = listOf()
+    var listPaid: List<Item> = listOf()
+
+    var cFree = 0
+    var cPaid = 0
+
+    var listMix: MutableList<Item> = mutableListOf()
 
     lateinit var bookViewModel: BookViewModel
 
@@ -48,24 +52,54 @@ class ListBookActivity : AppCompatActivity() {
 //            adapter = BookAdapter(list1, this@ListBookActivity)
 //            recycler_view_list_book.adapter = adapter
 
-            bookViewModel.getBooksFromApi(book_title, "free-ebooks").observe(this,
+            bookViewModel.getBooksFromApi(book_title, "paid-ebooks").observe(this,
                 Observer {
-                    setUpBookRecyclerView(it.items)
+                    listPaid = it.items
+                    for (item in it.items) {
+                        if (item.saleInfo?.saleability.equals("FREE")) {
+                            cFree += 1
+                        } else {
+                            cPaid += 1
+                        }
+                    }
+                    Log.d("FREE / PAID", "${cFree}  ${cPaid}")
+//                    setUpBookRecyclerView(it.items)
 //                    list1 = it.items
 //                    getToList(it.items)
 //                    helpFunctionAdd(it.items.toMutableList())
 //                    adapter.notifyDataSetChanged()
-//                    Log.d("LOG", list1.toString())
+//                    Log.d("LOG", it.items.toString())
+
+                    bookViewModel.getBooksFromApi(book_title, "free-ebooks").observe(this,
+                        Observer {
+                            listFree = it.items
+                            for (item in it.items) {
+                                Log.d("NESTED OBSERVER FREE", item.toString())
+                            }
+
+                            for(item in listPaid) {
+                                Log.d("NESTED OBSERVER PAID", item.toString())
+                            }
+
+                            for(i: Int in 0..listPaid.size-1) {
+                                listMix.add(listPaid[i])
+                                listMix.add(listFree[i])
+                            }
+
+                            Log.d("MIXED LISTED NESTED", listMix.toString())
+
+                            setUpBookRecyclerView(listMix)
+                        })
                 })
 //            Log.d("LOG", list1.toString())
 //            Log.d("LOG", helpFunctionGet().toString())
 
 
-            bookViewModel.getBooksFromApi(book_title, "paid-ebooks").observe(this,
-                Observer {
-                    setUpBookRecyclerView2(it.items)
-//                    list2 = it.items
-                })
+//            bookViewModel.getBooksFromApi(book_title, "paid-ebooks").observe(this,
+//                Observer {
+//                    setUpBookRecyclerView2(it.items)
+////                    list2 = it.items
+//                })
 //            Log.d("COCK", list2.toString())
 
 //            for(i: Int in 0..(list1.size-1)) {
@@ -100,14 +134,14 @@ class ListBookActivity : AppCompatActivity() {
         return super.onContextItemSelected(item)
     }
 
-    private fun getToList(books: List<Item>) {
-//        list1 = books
-        books.let {
-            list1 = it
-        }
-        Log.d("LOG FROM FUNC", books.toString())
-        Log.d("LOG FROM FUNC2", list1.toString())
-    }
+//    private fun getToList(books: List<Item>) {
+////        list1 = books
+//        books.let {
+//            list1 = it
+//        }
+//        Log.d("LOG FROM FUNC", books.toString())
+//        Log.d("LOG FROM FUNC2", list1.toString())
+//    }
 
     private fun setUpBookRecyclerView(books: List<Item>) {
         if (books.isEmpty()) list_empty.visibility = View.VISIBLE
@@ -124,27 +158,27 @@ class ListBookActivity : AppCompatActivity() {
         }
     }
 
-    private fun setUpBookRecyclerView2(books: List<Item>) {
-        if (books.isEmpty()) list_empty.visibility = View.VISIBLE
-        else {
-            recycler_view_list_book2.apply {
-                swipe_refresh_list_book.isRefreshing = false
+//    private fun setUpBookRecyclerView2(books: List<Item>) {
+//        if (books.isEmpty()) list_empty.visibility = View.VISIBLE
+//        else {
+//            recycler_view_list_book2.apply {
+//                swipe_refresh_list_book.isRefreshing = false
+//
+//                adapter = books.let {
+//                    BookAdapter(
+//                        it,
+//                        this.context)
+//                }
+//            }
+//        }
+//    }
 
-                adapter = books.let {
-                    BookAdapter(
-                        it,
-                        this.context)
-                }
-            }
-        }
-    }
-
-    private fun helpFunctionAdd(books: List<Item>) {
-        Log.d("INSIDE HELP FUNC", books.toString())
-        helper.addToList(books)
-    }
-
-    private fun helpFunctionGet(): List<Item> {
-        return helper.getFinalList()
-    }
+//    private fun helpFunctionAdd(books: List<Item>) {
+//        Log.d("INSIDE HELP FUNC", books.toString())
+//        helper.addToList(books)
+//    }
+//
+//    private fun helpFunctionGet(): List<Item> {
+//        return helper.getFinalList()
+//    }
 }
