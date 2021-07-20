@@ -16,10 +16,23 @@ import fr.youness.ebook.utils.TITLE_BOOK_REQUEST
 import fr.youness.ebook.utils.Utils
 import kotlinx.android.synthetic.main.activity_list_book.*
 import kotlinx.android.synthetic.main.content_list_book.*
+import android.util.Log
+
+import fr.youness.ebook.help.Help
+
 
 class ListBookActivity : AppCompatActivity() {
 
+    var list1: List<Item> = listOf()
+    var list2: List<Item> = listOf()
+    var list3: MutableList<Item> = mutableListOf()
+
     lateinit var bookViewModel: BookViewModel
+
+    lateinit private var adapter: BookAdapter
+
+    var helper = Help()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_book)
@@ -31,10 +44,38 @@ class ListBookActivity : AppCompatActivity() {
 
         bookViewModel = BookViewModel(applicationContext)
         if (Utils.isNetworkConnected(this)) {
-            bookViewModel.getBooksFromApi(book_title).observe(this,
+
+//            adapter = BookAdapter(list1, this@ListBookActivity)
+//            recycler_view_list_book.adapter = adapter
+
+            bookViewModel.getBooksFromApi(book_title, "free-ebooks").observe(this,
                 Observer {
                     setUpBookRecyclerView(it.items)
+//                    list1 = it.items
+//                    getToList(it.items)
+//                    helpFunctionAdd(it.items.toMutableList())
+//                    adapter.notifyDataSetChanged()
+//                    Log.d("LOG", list1.toString())
                 })
+//            Log.d("LOG", list1.toString())
+//            Log.d("LOG", helpFunctionGet().toString())
+
+
+            bookViewModel.getBooksFromApi(book_title, "paid-ebooks").observe(this,
+                Observer {
+                    setUpBookRecyclerView2(it.items)
+//                    list2 = it.items
+                })
+//            Log.d("COCK", list2.toString())
+
+//            for(i: Int in 0..(list1.size-1)) {
+//                list3.add(list1[i])
+//                list3.add(list2[i])
+//            }
+
+//            Log.d("BROCK", list3.toString())
+
+
         } else {
             Toast.makeText(
                 this,
@@ -59,6 +100,15 @@ class ListBookActivity : AppCompatActivity() {
         return super.onContextItemSelected(item)
     }
 
+    private fun getToList(books: List<Item>) {
+//        list1 = books
+        books.let {
+            list1 = it
+        }
+        Log.d("LOG FROM FUNC", books.toString())
+        Log.d("LOG FROM FUNC2", list1.toString())
+    }
+
     private fun setUpBookRecyclerView(books: List<Item>) {
         if (books.isEmpty()) list_empty.visibility = View.VISIBLE
         else {
@@ -72,5 +122,29 @@ class ListBookActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun setUpBookRecyclerView2(books: List<Item>) {
+        if (books.isEmpty()) list_empty.visibility = View.VISIBLE
+        else {
+            recycler_view_list_book2.apply {
+                swipe_refresh_list_book.isRefreshing = false
+
+                adapter = books.let {
+                    BookAdapter(
+                        it,
+                        this.context)
+                }
+            }
+        }
+    }
+
+    private fun helpFunctionAdd(books: List<Item>) {
+        Log.d("INSIDE HELP FUNC", books.toString())
+        helper.addToList(books)
+    }
+
+    private fun helpFunctionGet(): List<Item> {
+        return helper.getFinalList()
     }
 }

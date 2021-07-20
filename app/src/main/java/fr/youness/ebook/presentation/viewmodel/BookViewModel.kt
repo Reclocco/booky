@@ -19,21 +19,11 @@ class BookViewModel(context: Context) : ViewModel() {
         repository = BookRepository(this.context)
     }
 
-    fun getBooksFromApi(book_title: String): MutableLiveData<ApiResponse> {
-        return repository.loadListBook(book_title)
+    fun getBooksFromApi(book_title: String, price: String): MutableLiveData<ApiResponse> {
+        return repository.loadListBook(book_title, price)
     }
 
     fun cancelJobs() {
         repository.cancelJobs()
     }
-
-//    fun insertBookinDB(book: Item) {
-//        viewModelScope.launch {
-//            repository.insertBookInDB(book)
-//        }
-//    }
-//
-//    fun getBooksFromDB(): LiveData<List<Item>> {
-//        return repository.getAllBooksFromDB()
-//    }
 }

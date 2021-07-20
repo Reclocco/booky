@@ -18,6 +18,7 @@ class BookRepository(context: Context) {
 
     fun loadListBook(
         book_title: String,
+        price: String
     ): MutableLiveData<ApiResponse> {
         getBooksFromApiJob = Job()
         return object : MutableLiveData<ApiResponse>() {
@@ -27,7 +28,7 @@ class BookRepository(context: Context) {
                     CoroutineScope(IO + theJob).launch {
                         try {
                             val books = ServiceBuilder.buildService(IBookApi::class.java)
-                                .getBooksFromApi(book_title, "paid-ebooks")
+                                .getBooksFromApi(book_title, price)
                             withContext(Main) {
                                 value = books
                                 theJob.complete()
@@ -44,18 +45,4 @@ class BookRepository(context: Context) {
     fun cancelJobs() {
         getBooksFromApiJob?.cancel()
     }
-
-//    suspend fun insertBookInDB(book: Item) {
-//        RoomViewModelApplication
-//            .provideBookDao(context)
-//            .bookDao()
-//            .insertBook(book)
-//    }
-//
-//    fun getAllBooksFromDB(): LiveData<List<Item>> {
-//        return RoomViewModelApplication
-//            .provideBookDao(context)
-//            .bookDao()
-//            .getAllBooksFromDB()
-//    }
 }
