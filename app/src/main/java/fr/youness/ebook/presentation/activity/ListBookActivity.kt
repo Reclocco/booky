@@ -55,14 +55,14 @@ class ListBookActivity : AppCompatActivity() {
             bookViewModel.getBooksFromApi(book_title, "paid-ebooks").observe(this,
                 Observer {
                     listPaid = it.items
-                    for (item in it.items) {
-                        if (item.saleInfo?.saleability.equals("FREE")) {
-                            cFree += 1
-                        } else {
-                            cPaid += 1
-                        }
-                    }
-                    Log.d("FREE / PAID", "${cFree}  ${cPaid}")
+//                    for (item in it.items) {
+//                        if (item.saleInfo?.saleability.equals("FREE")) {
+//                            cFree += 1
+//                        } else {
+//                            cPaid += 1
+//                        }
+//                    }
+//                    Log.d("FREE / PAID", "${cFree}  ${cPaid}")
 //                    setUpBookRecyclerView(it.items)
 //                    list1 = it.items
 //                    getToList(it.items)
@@ -73,20 +73,20 @@ class ListBookActivity : AppCompatActivity() {
                     bookViewModel.getBooksFromApi(book_title, "free-ebooks").observe(this,
                         Observer {
                             listFree = it.items
-                            for (item in it.items) {
-                                Log.d("NESTED OBSERVER FREE", item.toString())
-                            }
-
-                            for(item in listPaid) {
-                                Log.d("NESTED OBSERVER PAID", item.toString())
-                            }
+//                            for (item in it.items) {
+//                                Log.d("NESTED OBSERVER FREE", item.toString())
+//                            }
+//
+//                            for(item in listPaid) {
+//                                Log.d("NESTED OBSERVER PAID", item.toString())
+//                            }
 
                             for(i: Int in 0..listPaid.size-1) {
                                 listMix.add(listPaid[i])
                                 listMix.add(listFree[i])
                             }
 
-                            Log.d("MIXED LISTED NESTED", listMix.toString())
+//                            Log.d("MIXED LISTED NESTED", listMix.toString())
 
                             setUpBookRecyclerView(listMix)
                         })
