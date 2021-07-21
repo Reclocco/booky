@@ -66,7 +66,6 @@ internal class BookAdapter(private val listBook: List<Item>, private val context
         convertView.bookTitle.text = listBook[position].volumeInfo?.title
         listBook[position].volumeInfo?.authors?.forEach { author ->
             convertView.bookAuthor.text = author
-//            return convertView
         }
 
         convertView.setOnClickListener {

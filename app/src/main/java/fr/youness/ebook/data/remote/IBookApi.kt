@@ -10,7 +10,6 @@ interface IBookApi {
     @GET(BOOK_URL)
     suspend fun getBooksFromApi(
         @Query("q") book_title: String,
-//        @Query("inauthor") book_author: String,
         @Query("filter") books_price: String
     ): ApiResponse
 }
